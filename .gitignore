@@ -1,0 +1,35 @@
+# IDE
+.idea/
+.vscode/
+.kiro/
+.cursor/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+*.min.js
+*.min.css
+
+# Temp
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Docker
+.docker/

@@ -1,0 +1,331 @@
+/* Responsive Styles */
+
+/* 平板设备 (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    :root {
+        --sidebar-width: 180px;
+    }
+    
+    .app-title {
+        font-size: var(--font-size-md);
+    }
+    
+    .lens-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-section:nth-child(2) {
+        display: none;
+    }
+}
+
+/* 手机设备 (<768px) */
+@media screen and (max-width: 768px) {
+    :root {
+        --header-height: 48px;
+        --footer-height: auto;
+        --min-touch-size: 48px;
+    }
+    
+    .app-container {
+        flex-direction: column;
+    }
+    
+    .app-header {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .app-title {
+        font-size: var(--font-size-sm);
+    }
+    
+    .app-main {
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+    }
+    
+    /* 侧边栏变为顶部/底部栏 */
+    .sidebar {
+        width: 100%;
+        flex-shrink: 0;
+    }
+    
+    .sidebar-left {
+        order: 1;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+        max-height: 120px;
+    }
+    
+    .sidebar-right {
+        order: 3;
+        border-left: none;
+        border-top: 1px solid var(--color-border);
+        max-height: 200px;
+    }
+    
+    .sidebar-header {
+        padding: var(--spacing-sm);
+    }
+    
+    .sidebar-content {
+        padding: var(--spacing-sm);
+    }
+    
+    .canvas-section {
+        order: 2;
+        flex: 1;
+        min-height: 200px;
+    }
+    
+    /* 透镜素材库横向滚动 */
+    .lens-category {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .category-title {
+        display: none;
+    }
+    
+    .lens-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: var(--spacing-sm);
+        padding-bottom: var(--spacing-xs);
+    }
+    
+    .lens-item {
+        flex-shrink: 0;
+        width: 70px;
+        padding: var(--spacing-xs);
+    }
+    
+    .lens-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .lens-name {
+        font-size: 10px;
+    }
+    
+    /* 画布工具栏 */
+    .canvas-toolbar {
+        flex-wrap: wrap;
+        padding: var(--spacing-xs);
+        gap: var(--spacing-xs);
+    }
+    
+    .toolbar-left,
+    .toolbar-center,
+    .toolbar-right {
+        gap: var(--spacing-xs);
+    }
+    
+    .btn-tool span {
+        display: none;
+    }
+    
+    .canvas-wrapper {
+        margin: var(--spacing-sm);
+    }
+    
+    /* 参数面板 */
+    .panel-params {
+        gap: var(--spacing-sm);
+    }
+    
+    .param-actions {
+        flex-direction: row;
+        margin-top: var(--spacing-sm);
+        padding-top: var(--spacing-sm);
+    }
+    
+    .param-actions .btn {
+        flex: 1;
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    /* 底部知识提示区 */
+    .app-footer {
+        height: auto;
+        padding: var(--spacing-sm);
+    }
+    
+    .knowledge-tip {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* 模态框 */
+    .modal {
+        max-width: 100%;
+        max-height: 90vh;
+    }
+    
+    .guide-content {
+        padding: var(--spacing-md);
+    }
+    
+    .guide-icon {
+        font-size: 36px;
+    }
+    
+    .guide-welcome h2 {
+        font-size: var(--font-size-lg);
+    }
+    
+    /* Toast位置调整 */
+    .toast-container {
+        bottom: var(--spacing-md);
+        width: calc(100% - var(--spacing-md) * 2);
+    }
+    
+    .toast {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* 小屏手机 (<480px) */
+@media screen and (max-width: 480px) {
+    .sidebar-left {
+        max-height: 100px;
+    }
+    
+    .sidebar-right {
+        max-height: 180px;
+    }
+    
+    .lens-item {
+        width: 60px;
+    }
+    
+    .lens-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .param-group {
+        gap: 2px;
+    }
+    
+    .param-label {
+        font-size: var(--font-size-xs);
+    }
+    
+    .data-item {
+        flex: 1;
+    }
+    
+    .data-label {
+        font-size: 10px;
+    }
+    
+    .data-value {
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* 横屏模式 */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .app-main {
+        flex-direction: row;
+    }
+    
+    .sidebar-left {
+        order: 1;
+        width: 100px;
+        max-height: none;
+        border-bottom: none;
+        border-right: 1px solid var(--color-border);
+    }
+    
+    .sidebar-right {
+        order: 3;
+        width: 160px;
+        max-height: none;
+        border-top: none;
+        border-left: 1px solid var(--color-border);
+    }
+    
+    .canvas-section {
+        order: 2;
+    }
+    
+    .lens-grid {
+        flex-direction: column;
+        overflow-x: visible;
+        overflow-y: auto;
+    }
+    
+    .lens-item {
+        width: 100%;
+    }
+    
+    .app-footer {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
+/* 高分辨率屏幕 */
+@media screen and (min-width: 1440px) {
+    :root {
+        --sidebar-width: 260px;
+    }
+    
+    .canvas-wrapper {
+        margin: var(--spacing-lg);
+    }
+}
+
+/* 触屏设备优化 */
+@media (hover: none) and (pointer: coarse) {
+    .btn:hover {
+        opacity: 1;
+    }
+    
+    .lens-item:hover {
+        border-color: var(--color-border);
+        background-color: var(--color-bg-input);
+    }
+    
+    .lens-item:active {
+        border-color: var(--color-primary);
+        background-color: var(--color-primary-light);
+    }
+    
+    .preset-item:hover {
+        border-color: var(--color-border);
+        background-color: var(--color-bg-input);
+    }
+    
+    .preset-item:active {
+        border-color: var(--color-primary);
+        background-color: var(--color-primary-light);
+    }
+}
+
+/* 打印样式 */
+@media print {
+    .app-header,
+    .sidebar,
+    .canvas-toolbar,
+    .app-footer {
+        display: none;
+    }
+    
+    .canvas-section {
+        width: 100%;
+        height: auto;
+    }
+    
+    .canvas-wrapper {
+        margin: 0;
+        box-shadow: none;
+    }
+}

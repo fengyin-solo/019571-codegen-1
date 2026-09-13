@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="中学生交互式光学设计工具 - 探索透镜如何改变光的传播">
+    <title>光学设计实验室</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- 测验题目面板 -->
+    <div id="quiz-panel" class="quiz-panel hidden">
+        <div class="quiz-panel-header">
+            <div class="quiz-title-section">
+                <span class="quiz-badge">📝 光学测验</span>
+                <div class="quiz-score">
+                    <span class="score-label">得分</span>
+                    <span class="score-value" id="quiz-score-value">0</span>
+                    <span class="score-separator">/</span>
+                    <span class="score-total" id="quiz-score-total">0</span>
+                </div>
+            </div>
+            <button class="btn btn-icon" id="btn-quiz-close" title="关闭测验">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <div class="quiz-panel-body">
+            <h3 class="quiz-question-title" id="quiz-question-title">题目加载中...</h3>
+            <p class="quiz-question-desc" id="quiz-question-desc"></p>
+            <div class="quiz-hint-section">
+                <button class="btn btn-secondary btn-sm" id="btn-quiz-hint">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <span>提示</span>
+                </button>
+                <div class="quiz-hint-text hidden" id="quiz-hint-text"></div>
+            </div>
+        </div>
+        <div class="quiz-panel-footer">
+            <button class="btn btn-secondary" id="btn-quiz-skip">
+                <span>跳过</span>
+            </button>
+            <button class="btn btn-primary" id="btn-quiz-submit">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <span>提交答案</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 测验结果模态框 -->
+    <div id="quiz-result-modal" class="modal-overlay hidden">
+        <div class="modal quiz-result-modal">
+            <div class="modal-header">
+                <h3 id="quiz-result-title">答题结果</h3>
+            </div>
+            <div class="modal-body quiz-result-body">
+                <div class="quiz-result-icon" id="quiz-result-icon">✅</div>
+                <div class="quiz-result-score">
+                    <span id="quiz-result-score">+10</span>
+                    <span class="quiz-result-score-label">分</span>
+                </div>
+                <div class="quiz-result-explanation" id="quiz-result-explanation"></div>
+                <div class="quiz-result-details" id="quiz-result-details"></div>
+                <div class="quiz-result-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="quiz-total-score">0</span>
+                        <span class="stat-label">总分</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="quiz-accuracy">0%</span>
+                        <span class="stat-label">正确率</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="quiz-answered">0</span>
+                        <span class="stat-label">已答题</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-quiz-exit">
+                    <span>退出测验</span>
+                </button>
+                <button class="btn btn-primary" id="btn-quiz-next">
+                    <span>下一题</span>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 欢迎引导遮罩 -->
+    <div id="guide-overlay" class="guide-overlay hidden">
+        <div class="guide-modal">
+            <div class="guide-content">
+                <div class="guide-welcome" id="guide-welcome">
+                    <div class="guide-icon">🔬</div>
+                    <h2>欢迎来到光学设计实验室</h2>
+                    <p class="guide-subtitle">探索透镜如何改变光的传播</p>
+                    <p class="guide-desc">在这里，你可以：</p>
+                    <ul class="guide-list">
+                        <li>🔍 添加不同类型的透镜</li>
+                        <li>⚙️ 调节透镜参数</li>
+                        <li>✨ 观察光路变化</li>
+                    </ul>
+                    <button class="btn btn-primary" id="btn-start-guide">开始学习</button>
+                    <button class="btn btn-text" id="btn-skip-guide">跳过引导</button>
+                </div>
+                
+                <div class="guide-step hidden" id="guide-step-1">
+                    <div class="guide-step-num">1/3</div>
+                    <h3>添加透镜</h3>
+                    <p>从左侧素材库中，拖拽一个<strong>凸透镜</strong>到画布上</p>
+                    <div class="guide-hint">
+                        <span class="hint-icon">💡</span>
+                        <span>凸透镜可以让光线汇聚到一点</span>
+                    </div>
+                    <button class="btn btn-primary" id="btn-step-1-next">我知道了</button>
+                </div>
+                
+                <div class="guide-step hidden" id="guide-step-2">
+                    <div class="guide-step-num">2/3</div>
+                    <h3>调节参数</h3>
+                    <p>点击画布上的透镜，在右侧面板调节<strong>折射率</strong></p>
+                    <div class="guide-hint">
+                        <span class="hint-icon">💡</span>
+                        <span>折射率越大，光偏折越明显</span>
+                    </div>
+                    <button class="btn btn-primary" id="btn-step-2-next">我知道了</button>
+                </div>
+                
+                <div class="guide-step hidden" id="guide-step-3">
+                    <div class="guide-step-num">3/3</div>
+                    <h3>查看光路</h3>
+                    <p>点击<strong>启动光路</strong>按钮，观察光线如何穿过透镜</p>
+                    <div class="guide-hint">
+                        <span class="hint-icon">💡</span>
+                        <span>红色是入射光，蓝色是折射光</span>
+                    </div>
+                    <button class="btn btn-primary" id="btn-finish-guide">开始探索</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用容器 -->
+    <div id="app" class="app-container">
+        <!-- 顶部工具栏 -->
+        <header class="app-header">
+            <div class="header-left">
+                <span class="app-logo">🔬</span>
+                <h1 class="app-title">光学设计实验室</h1>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-tool" id="btn-quiz-mode" title="光学测验模式">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                    <span>测验模式</span>
+                </button>
+                <button class="btn btn-icon" id="btn-help" title="查看引导">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="app-main">
+            <!-- 左侧素材库 -->
+            <aside class="sidebar sidebar-left" id="lens-library">
+                <div class="sidebar-header">
+                    <h2 class="sidebar-title">透镜素材库</h2>
+                </div>
+                <div class="sidebar-content">
+                    <div class="lens-category">
+                        <h3 class="category-title">基础形状</h3>
+                        <div class="lens-grid">
+                            <div class="lens-item" draggable="true" data-lens-type="convex">
+                                <div class="lens-icon lens-convex"></div>
+                                <span class="lens-name">凸透镜</span>
+                                <button class="btn-help-small" data-help="convex">?</button>
+                            </div>
+                            <div class="lens-item" draggable="true" data-lens-type="concave">
+                                <div class="lens-icon lens-concave"></div>
+                                <span class="lens-name">凹透镜</span>
+                                <button class="btn-help-small" data-help="concave">?</button>
+                            </div>
+                            <div class="lens-item" draggable="true" data-lens-type="plano">
+                                <div class="lens-icon lens-plano"></div>
+                                <span class="lens-name">平面透镜</span>
+                                <button class="btn-help-small" data-help="plano">?</button>
+                            </div>
+                            <div class="lens-item" draggable="true" data-lens-type="aspheric">
+                                <div class="lens-icon lens-aspheric"></div>
+                                <span class="lens-name">非球面</span>
+                                <button class="btn-help-small" data-help="aspheric">?</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lens-category">
+                        <h3 class="category-title">特殊材料</h3>
+                        <div class="lens-grid">
+                            <div class="lens-item" draggable="true" data-lens-type="convex" data-material="lowDispersion">
+                                <div class="lens-icon lens-convex lens-low-dispersion"></div>
+                                <span class="lens-name">低色散</span>
+                                <button class="btn-help-small" data-help="lowDispersion">?</button>
+                            </div>
+                            <div class="lens-item" draggable="true" data-lens-type="convex" data-material="highIndex">
+                                <div class="lens-icon lens-convex lens-high-index"></div>
+                                <span class="lens-name">高折射率</span>
+                                <button class="btn-help-small" data-help="highIndex">?</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 中间画布区 -->
+            <section class="canvas-section">
+                <div class="canvas-toolbar">
+                    <div class="toolbar-left">
+                        <button class="btn btn-tool" id="btn-toggle-light" title="启动/暂停光路">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            <span>启动光路</span>
+                        </button>
+                        <button class="btn btn-tool" id="btn-reset-canvas" title="重置画布">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"/>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                            </svg>
+                            <span>重置</span>
+                        </button>
+                    </div>
+                    <div class="toolbar-center">
+                        <select class="select-light-mode" id="select-light-mode">
+                            <option value="parallel">平行光</option>
+                            <option value="point">点光源</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-right">
+                        <button class="btn btn-tool" id="btn-toggle-labels" title="显示/隐藏标注">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 7V4h16v3"/>
+                                <path d="M9 20h6"/>
+                                <path d="M12 4v16"/>
+                            </svg>
+                            <span>标注</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="canvas-wrapper" id="canvas-wrapper">
+                    <canvas id="optics-canvas"></canvas>
+                    <div class="canvas-drop-hint hidden" id="canvas-drop-hint">
+                        <span>拖放透镜到这里</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 右侧参数面板 -->
+            <aside class="sidebar sidebar-right" id="params-panel">
+                <div class="sidebar-header">
+                    <h2 class="sidebar-title">参数调节</h2>
+                </div>
+                <div class="sidebar-content">
+                    <div class="panel-empty" id="panel-empty">
+                        <div class="empty-icon">👆</div>
+                        <p>点击画布上的透镜<br>查看和调节参数</p>
+                    </div>
+                    <div class="panel-params hidden" id="panel-params">
+                        <div class="param-group">
+                            <label class="param-label">
+                                透镜类型
+                                <span class="param-value" id="param-type-value">凸透镜</span>
+                            </label>
+                        </div>
+                        <div class="param-group">
+                            <label class="param-label">
+                                折射率
+                                <button class="btn-help-small" data-help="refractiveIndex">?</button>
+                                <span class="param-value" id="param-ri-value">1.50</span>
+                            </label>
+                            <input type="range" class="param-slider" id="param-ri" min="1.0" max="1.8" step="0.01" value="1.5">
+                            <div class="param-hint">数值越大，光偏折越明显</div>
+                        </div>
+                        <div class="param-group">
+                            <label class="param-label">
+                                尺寸
+                                <span class="param-value" id="param-size-value">100%</span>
+                            </label>
+                            <input type="range" class="param-slider" id="param-size" min="50" max="150" step="5" value="100">
+                        </div>
+                        <div class="param-group" id="param-curvature-group">
+                            <label class="param-label">
+                                弧度调节
+                                <button class="btn-help-small" data-help="curvature">?</button>
+                                <span class="param-value" id="param-curvature-value">50%</span>
+                            </label>
+                            <input type="range" class="param-slider" id="param-curvature" min="10" max="90" step="5" value="50">
+                            <div class="param-hint">调节透镜的弯曲程度</div>
+                        </div>
+                        <div class="param-group">
+                            <label class="param-label">材料类型</label>
+                            <select class="param-select" id="param-material">
+                                <option value="normal">普通玻璃</option>
+                                <option value="highIndex">高折射率镜片</option>
+                                <option value="lowDispersion">低色散镜片</option>
+                            </select>
+                        </div>
+                        <div class="param-actions">
+                            <button class="btn btn-secondary" id="btn-reset-lens">重置参数</button>
+                            <button class="btn btn-danger" id="btn-delete-lens">删除透镜</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- 底部知识提示区 -->
+        <footer class="app-footer" id="data-panel">
+            <div class="knowledge-tip" id="knowledge-tip">
+                <span class="tip-icon">💡</span>
+                <span class="tip-text">光从空气进入玻璃会向法线偏折</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 帮助提示框 -->
+    <div class="tooltip hidden" id="help-tooltip">
+        <div class="tooltip-content"></div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/lens.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/interaction.js"></script>
+    <script src="js/guide.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
