@@ -7,42 +7,47 @@ class Lens {
         this.type = options.type || CONFIG.LENS_TYPES.CONVEX;
         this.x = options.x || 0;
         this.y = options.y || 0;
-        this.refractiveIndex = options.refractiveIndex || CONFIG.LENS_DEFAULTS.refractiveIndex;
         this.size = options.size || CONFIG.LENS_DEFAULTS.size;
         this.curvature = options.curvature || CONFIG.LENS_DEFAULTS.curvature;
         this.material = options.material || CONFIG.LENS_DEFAULTS.material;
         this.selected = false;
-        
-        // 根据材料设置默认参数
+        this._materialApplied = null;
+
+        // 先根据材料确定色散系数（首次应用不会改动折射率）
         this.applyMaterial(this.material);
+
+        // 折射率：优先使用方案中保存的值；新建时沿用材料默认值
+        if (options.refractiveIndex !== undefined && options.refractiveIndex !== null) {
+            this.refractiveIndex = options.refractiveIndex;
+        }
     }
-    
+
     /**
-     * 应用材料预设
+     * 应用材料预设。初始化恢复时仅设置色散；用户主动切换材料时
+     * 折射率同步为新材料的默认值。
      */
     applyMaterial(materialId) {
-        const materials = CONFIG.MATERIALS;
         let material;
-        
         switch (materialId) {
             case 'highIndex':
-                material = materials.HIGH_INDEX;
+                material = CONFIG.MATERIALS.HIGH_INDEX;
                 break;
             case 'lowDispersion':
-                material = materials.LOW_DISPERSION;
+                material = CONFIG.MATERIALS.LOW_DISPERSION;
                 break;
             default:
-                material = materials.NORMAL;
+                material = CONFIG.MATERIALS.NORMAL;
         }
-        
-        this.material = materialId;
+
+        const changed = this._materialApplied !== null && this._materialApplied !== material.id;
+        this.material = material.id;
         this.dispersion = material.dispersion;
-        
-        // 只在初始化时设置折射率
-        if (!this._initialized) {
+        if (changed) {
             this.refractiveIndex = material.refractiveIndex;
-            this._initialized = true;
+        } else if (this.refractiveIndex === undefined) {
+            this.refractiveIndex = material.refractiveIndex;
         }
+        this._materialApplied = this.material;
     }
     
     /**
@@ -119,8 +124,9 @@ class Lens {
         this.curvature = CONFIG.LENS_DEFAULTS.curvature;
         this.material = CONFIG.LENS_DEFAULTS.material;
         this.dispersion = CONFIG.MATERIALS.NORMAL.dispersion;
+        this._materialApplied = this.material;
     }
-    
+
     /**
      * 序列化为JSON
      */
@@ -133,7 +139,8 @@ class Lens {
             refractiveIndex: this.refractiveIndex,
             size: this.size,
             curvature: this.curvature,
-            material: this.material
+            material: this.material,
+            dispersion: this.dispersion
         };
     }
     

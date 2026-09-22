@@ -5,11 +5,12 @@ const CONFIG = {
     // 应用版本
     VERSION: '1.0.0',
     
-    // 存储键名
+    // 存储键名（各键职责独立，不可互相覆盖）
     STORAGE_KEYS: {
         DESIGNS: 'optics_designs',
         SETTINGS: 'optics_settings',
-        GUIDE_COMPLETED: 'optics_guide_completed'
+        GUIDE_COMPLETED: 'optics_guide_completed',
+        CURRENT_DESIGN: 'optics_current_design'
     },
     
     // 透镜类型

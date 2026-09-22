@@ -7,7 +7,8 @@ class App {
         this.interactionManager = null;
         this.guideManager = null;
         this.quizManager = null;
-        
+        this.designManager = null;
+
         this.init();
     }
     
@@ -33,7 +34,10 @@ class App {
         
         // 初始化交互管理器
         this.interactionManager = new InteractionManager(this.canvasManager);
-        
+
+        // 初始化设计方案管理（恢复上次选中的方案）
+        this.designManager = new DesignManager(this.canvasManager, this.interactionManager);
+
         // 初始化引导系统
         this.guideManager = new GuideManager();
         
@@ -141,9 +145,10 @@ class App {
      * 开始测验模式
      */
     startQuizMode() {
-        // 清空画布
+        // 清空画布（测验用临时画布，与已保存的设计方案脱钩）
         this.canvasManager.clear();
-        
+        this.designManager.clearCurrentBinding();
+
         // 启动测验
         this.quizManager.startQuizMode();
         
@@ -205,7 +210,8 @@ class App {
         
         // 清空画布
         this.canvasManager.clear();
-        
+        this.designManager.clearCurrentBinding();
+
         Utils.showToast(
             `测验结束！得分：${score.score}分，正确率：${score.accuracy}%`,
             score.accuracy >= 60 ? 'success' : 'warning'

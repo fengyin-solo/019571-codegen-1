@@ -10,7 +10,9 @@ class CanvasManager {
         this.selectedLens = null;
         this.isDragging = false;
         this.dragOffset = { x: 0, y: 0 };
-        
+        // 抑制画布变更事件（如载入方案、进入测验模式等程序性改动期间使用）
+        this.suppressChanges = false;
+
         this.init();
     }
     
@@ -127,7 +129,10 @@ class CanvasManager {
     }
     
     handlePointerUp() {
-        this.isDragging = false;
+        if (this.isDragging) {
+            this.isDragging = false;
+            this.emitChange();
+        }
     }
     
     handleDragOver(e) {
@@ -166,8 +171,9 @@ class CanvasManager {
     addLens(lens) {
         this.lenses.push(lens);
         this.renderer.setLenses(this.lenses);
+        this.emitChange();
     }
-    
+
     removeLens(lens) {
         const index = this.lenses.indexOf(lens);
         if (index > -1) {
@@ -176,7 +182,38 @@ class CanvasManager {
                 this.deselectLens();
             }
             this.renderer.setLenses(this.lenses);
+            this.emitChange();
         }
+    }
+
+    /**
+     * 用一批透镜整体替换画布内容（用于载入设计方案）
+     * @param {Lens[]} lenses
+     */
+    replaceLenses(lenses) {
+        this.lenses = Array.isArray(lenses) ? lenses : [];
+
+        // 位置夹紧，避免在不同尺寸的画布上恢复后透镜跑到可视区域外
+        const maxX = Math.max(50, this.renderer.width - 50);
+        const maxY = Math.max(50, this.renderer.height - 50);
+        this.lenses.forEach(lens => {
+            lens.selected = false;
+            lens.x = Utils.clamp(lens.x, 50, maxX);
+            lens.y = Utils.clamp(lens.y, 50, maxY);
+        });
+
+        this.selectedLens = null;
+        this.isDragging = false;
+        this.renderer.setLenses(this.lenses);
+        this.emitChange();
+    }
+
+    /**
+     * 画布内容发生变化时通知外部（透镜新增/删除/移动）
+     */
+    emitChange() {
+        if (this.suppressChanges) return;
+        window.dispatchEvent(new CustomEvent('canvasChanged'));
     }
     
     selectLens(lens) {

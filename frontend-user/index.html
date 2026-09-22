@@ -103,6 +103,66 @@
         </div>
     </div>
 
+    <!-- 设计方案管理模态框 -->
+    <div id="design-modal" class="modal-overlay hidden">
+        <div class="modal design-modal" role="dialog" aria-modal="true" aria-labelledby="design-modal-title">
+            <div class="modal-header">
+                <h3 id="design-modal-title">设计方案管理</h3>
+                <button class="btn btn-icon" id="btn-design-close" title="关闭">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 保存当前画布 -->
+                <div class="design-save-section">
+                    <label class="form-label" for="design-name-input">把当前透镜组合与光源设置存为方案</label>
+                    <div class="design-save-row">
+                        <input type="text" class="form-input" id="design-name-input"
+                               maxlength="30" placeholder="给新方案起个名字">
+                    </div>
+                    <div class="design-save-actions">
+                        <button class="btn btn-primary" id="btn-design-save">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                            <span>保存为新方案</span>
+                        </button>
+                        <button class="btn btn-secondary" id="btn-design-update" disabled>
+                            <span>更新当前方案</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 写入失败提示（保留原方案，可重试） -->
+                <div class="design-error hidden" id="design-error" role="alert">
+                    <span class="design-error-icon">⚠️</span>
+                    <span class="design-error-text" id="design-error-text"></span>
+                    <button class="btn btn-sm btn-secondary" id="design-error-retry">重试</button>
+                </div>
+
+                <!-- 已保存方案列表 -->
+                <div class="saved-designs">
+                    <h4>已保存的方案</h4>
+                    <div class="design-list" id="design-list"></div>
+                    <!-- 空态说明 -->
+                    <div class="design-empty hidden" id="design-empty">
+                        <div class="empty-icon">📁</div>
+                        <p>还没有保存过设计方案</p>
+                        <p class="design-empty-hint">在画布上摆好透镜、选好光源模式后，<br>在上方输入名字并保存，随时可以切换回来。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-design-cancel">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 欢迎引导遮罩 -->
     <div id="guide-overlay" class="guide-overlay hidden">
         <div class="guide-modal">
@@ -260,6 +320,12 @@
                         </select>
                     </div>
                     <div class="toolbar-right">
+                        <button class="btn btn-tool" id="btn-designs" title="保存或切换设计方案">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            <span>设计方案</span>
+                        </button>
                         <button class="btn btn-tool" id="btn-toggle-labels" title="显示/隐藏标注">
                             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M4 7V4h16v3"/>
@@ -361,6 +427,7 @@
     <script src="js/lens.js"></script>
     <script src="js/renderer.js"></script>
     <script src="js/canvas.js"></script>
+    <script src="js/design.js"></script>
     <script src="js/quiz.js"></script>
     <script src="js/interaction.js"></script>
     <script src="js/guide.js"></script>

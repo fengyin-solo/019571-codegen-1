@@ -70,6 +70,27 @@ class Renderer {
         this.render();
         return this.showLabels;
     }
+
+    /**
+     * 直接设置标注显示状态（用于恢复设计方案）
+     */
+    setShowLabels(show) {
+        this.showLabels = !!show;
+        this.render();
+    }
+
+    /**
+     * 一次性恢复光源与显示状态（用于切换到设计方案）
+     */
+    setState(state = {}) {
+        if (state.lightMode !== undefined) this.lightMode = state.lightMode;
+        if (state.rayCount !== undefined) this.rayCount = state.rayCount;
+        if (state.incidentAngle !== undefined) this.incidentAngle = state.incidentAngle;
+        if (state.showLabels !== undefined) this.showLabels = !!state.showLabels;
+        if (state.showDispersion !== undefined) this.showDispersion = !!state.showDispersion;
+        if (state.isRunning !== undefined) this.isRunning = !!state.isRunning;
+        this.render();
+    }
     
     setShowDispersion(show) {
         this.showDispersion = show;
