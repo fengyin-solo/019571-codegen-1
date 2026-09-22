@@ -166,6 +166,12 @@
                 <h1 class="app-title">光学设计实验室</h1>
             </div>
             <div class="header-right">
+                <button class="btn btn-tool" id="btn-designs" title="管理已保存的设计方案">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span>设计方案</span>
+                </button>
                 <button class="btn btn-tool" id="btn-quiz-mode" title="光学测验模式">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -346,6 +352,49 @@
         </footer>
     </div>
 
+    <!-- 设计方案管理模态框 -->
+    <div id="design-modal" class="modal-overlay hidden">
+        <div class="modal design-modal">
+            <div class="modal-header">
+                <h3>设计方案管理</h3>
+                <button class="btn btn-icon" id="btn-design-close" title="关闭">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 存储写入失败提示 -->
+                <div class="design-write-error hidden" id="design-write-error">
+                    <span class="design-error-icon">⚠️</span>
+                    <span class="design-error-text" id="design-error-text"></span>
+                    <button class="btn btn-secondary btn-sm" id="btn-design-retry">重试</button>
+                </div>
+
+                <!-- 保存当前画布 -->
+                <div class="design-save-section">
+                    <label class="form-label" for="design-name-input">把当前透镜组合与光源设置存为方案</label>
+                    <div class="design-save-row">
+                        <input type="text" class="form-input" id="design-name-input"
+                               placeholder="输入方案名称，如：放大镜实验" maxlength="30">
+                        <button class="btn btn-primary" id="btn-design-save">保存方案</button>
+                    </div>
+                </div>
+
+                <!-- 已保存方案 -->
+                <div class="saved-designs">
+                    <h4>已保存的方案</h4>
+                    <div class="design-empty hidden" id="design-empty">
+                        <div class="empty-icon">🗂️</div>
+                        <p>还没有保存任何设计方案<br>给当前实验起个名字，点击“保存方案”即可</p>
+                    </div>
+                    <div class="design-list" id="design-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 帮助提示框 -->
     <div class="tooltip hidden" id="help-tooltip">
         <div class="tooltip-content"></div>
@@ -363,6 +412,7 @@
     <script src="js/canvas.js"></script>
     <script src="js/quiz.js"></script>
     <script src="js/interaction.js"></script>
+    <script src="js/design.js"></script>
     <script src="js/guide.js"></script>
     <script src="js/app.js"></script>
 </body>

@@ -7,6 +7,7 @@ class App {
         this.interactionManager = null;
         this.guideManager = null;
         this.quizManager = null;
+        this.designManager = null;
         
         this.init();
     }
@@ -33,7 +34,10 @@ class App {
         
         // 初始化交互管理器
         this.interactionManager = new InteractionManager(this.canvasManager);
-        
+
+        // 初始化设计方案管理
+        this.designManager = new DesignManager(this.canvasManager, this.interactionManager);
+
         // 初始化引导系统
         this.guideManager = new GuideManager();
         

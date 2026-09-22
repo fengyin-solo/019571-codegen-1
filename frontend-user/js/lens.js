@@ -7,14 +7,18 @@ class Lens {
         this.type = options.type || CONFIG.LENS_TYPES.CONVEX;
         this.x = options.x || 0;
         this.y = options.y || 0;
-        this.refractiveIndex = options.refractiveIndex || CONFIG.LENS_DEFAULTS.refractiveIndex;
         this.size = options.size || CONFIG.LENS_DEFAULTS.size;
         this.curvature = options.curvature || CONFIG.LENS_DEFAULTS.curvature;
         this.material = options.material || CONFIG.LENS_DEFAULTS.material;
         this.selected = false;
-        
-        // 根据材料设置默认参数
+
+        // 先应用材料预设（确定色散与默认折射率）
         this.applyMaterial(this.material);
+
+        // 再采用显式传入的折射率，保证恢复方案时自定义参数不被材料默认值覆盖
+        if (typeof options.refractiveIndex === 'number') {
+            this.refractiveIndex = options.refractiveIndex;
+        }
     }
     
     /**

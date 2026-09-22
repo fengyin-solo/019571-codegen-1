@@ -207,8 +207,43 @@ class CanvasManager {
         this.isDragging = false;
         this.renderer.setLenses([]);
         this.renderer.render();
+
+        // 画布被清空（手动重置、测验流程等），通知方案管理清除选中指针
+        window.dispatchEvent(new CustomEvent('canvasReset'));
     }
-    
+
+    /**
+     * 加载一批透镜（替换画布上现有内容）
+     */
+    loadLenses(lensDataList) {
+        const dataList = Array.isArray(lensDataList) ? lensDataList : [];
+
+        this.lenses = dataList.map(data => {
+            const lens = Lens.fromJSON(data);
+            // 画布尺寸可能与保存时不同，限制在可视范围内
+            lens.x = Utils.clamp(lens.x, 50, this.renderer.width - 50);
+            lens.y = Utils.clamp(lens.y, 50, this.renderer.height - 50);
+            lens.selected = false;
+            return lens;
+        });
+
+        this.selectedLens = null;
+        this.isDragging = false;
+        this.renderer.setLenses(this.lenses);
+
+        // 同步右侧参数面板为空态
+        window.dispatchEvent(new CustomEvent('lensDeselected'));
+    }
+
+    /**
+     * 导出画布当前状态（透镜组合数据）
+     */
+    getState() {
+        return {
+            lenses: this.lenses.map(lens => lens.toJSON())
+        };
+    }
+
     getRenderer() {
         return this.renderer;
     }

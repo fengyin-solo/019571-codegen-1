@@ -66,29 +66,86 @@ class InteractionManager {
                 return;
             }
             
-            // 重置透镜
+            // 重置透镜（clear 会派发 canvasReset 事件，通知方案管理清除选中指针）
             this.canvasManager.clear();
-            
+
             // 重置光线状态
             this.renderer.setRunning(false);
             this.updateLightButtonState(false);
-            
+
             Utils.showToast('画布已重置', 'success');
         });
         
         // 光源模式选择
         document.getElementById('select-light-mode').addEventListener('change', (e) => {
             this.renderer.setLightMode(e.target.value);
-            document.getElementById('data-light-type').textContent = 
-                e.target.value === 'parallel' ? '平行光' : '点光源';
+            const dataLightType = document.getElementById('data-light-type');
+            if (dataLightType) {
+                dataLightType.textContent =
+                    e.target.value === 'parallel' ? '平行光' : '点光源';
+            }
         });
-        
+
         // 切换标注
         const btnToggleLabels = document.getElementById('btn-toggle-labels');
         btnToggleLabels.addEventListener('click', () => {
             const showLabels = this.renderer.toggleLabels();
             btnToggleLabels.classList.toggle('active', showLabels);
         });
+    }
+
+    /**
+     * 导出光源与光路设置
+     */
+    getLightState() {
+        return {
+            mode: this.renderer.lightMode,
+            rayCount: this.renderer.rayCount,
+            angle: this.renderer.incidentAngle,
+            isRunning: this.renderer.isRunning,
+            showLabels: this.renderer.showLabels,
+            showDispersion: this.renderer.showDispersion
+        };
+    }
+
+    /**
+     * 恢复光源与光路设置，并同步对应的工具栏控件
+     */
+    setLightState(light) {
+        if (!light) return;
+
+        if (light.mode === CONFIG.LIGHT_MODES.PARALLEL ||
+            light.mode === CONFIG.LIGHT_MODES.POINT) {
+            this.renderer.setLightMode(light.mode);
+
+            const selectMode = document.getElementById('select-light-mode');
+            if (selectMode) selectMode.value = light.mode;
+        }
+
+        if (typeof light.rayCount === 'number') {
+            this.renderer.setRayCount(light.rayCount);
+        }
+
+        if (typeof light.angle === 'number') {
+            this.renderer.setIncidentAngle(light.angle);
+        }
+
+        if (typeof light.showDispersion === 'boolean') {
+            this.renderer.setShowDispersion(light.showDispersion);
+        }
+
+        this.renderer.setShowLabels(
+            typeof light.showLabels === 'boolean' ? light.showLabels : true
+        );
+
+        const btnToggleLabels = document.getElementById('btn-toggle-labels');
+        if (btnToggleLabels) {
+            btnToggleLabels.classList.toggle('active', this.renderer.showLabels);
+        }
+
+        // 启停状态最后设置，确保恢复后立即按新设置渲染
+        this.renderer.setRunning(!!light.isRunning);
+        this.updateLightButtonState(this.renderer.isRunning);
     }
     
     /**

@@ -8,6 +8,7 @@ const CONFIG = {
     // 存储键名
     STORAGE_KEYS: {
         DESIGNS: 'optics_designs',
+        ACTIVE_DESIGN: 'optics_active_design_id',
         SETTINGS: 'optics_settings',
         GUIDE_COMPLETED: 'optics_guide_completed'
     },

@@ -70,6 +70,11 @@ class Renderer {
         this.render();
         return this.showLabels;
     }
+
+    setShowLabels(show) {
+        this.showLabels = !!show;
+        this.render();
+    }
     
     setShowDispersion(show) {
         this.showDispersion = show;
